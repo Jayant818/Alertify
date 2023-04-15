@@ -1,26 +1,19 @@
-import Header from "@/Components/Header";
+// import Header from "@/Components/Header";
+// import HeroSection from "@/Components/HeroSection";
+import React from "react";
+import GmailReact from "@/Components/gmail-react";
 
-// import Head from "next/head";
-// import styles from "../styles/Home.module.css";
-// import Link from "next/link";
+const CLIENT_ID =
+	"221500998934-87vjhu49ecjabr76iqil2og9hsf83978.apps.googleusercontent.com";
+const API_KEY = "AIzaSyBKVZxzARtmzIvBYg21Ie15SNoJJn6HMq0";
 
 export default function Home() {
 	return (
 		<div>
-			{/* <main className={styles.main}>
-				<h1 className={styles.title}>Welcome to my Next.js app!</h1>
-
-				<p className={styles.description}>
-					To view a list of Gmail messages, click the button below:
-				</p>
-
-				<Link href="/gmails">View Gmail messages</Link>
-			</main>
-
-			<footer className={styles.footer}>
-				<p>© 2023 My Next.js App</p>
-			</footer> */}
-			<Header />
+			{/* <Header />
+			<HeroSection /> */}
+			<h1>Gmail API in React JS</h1>
+			<GmailReact clientId={CLIENT_ID} apiKey={API_KEY} />
 		</div>
 	);
 }
