@@ -6,7 +6,6 @@
 
 // Import React and Google API client library
 import React, { useState, useEffect } from "react";
-import { gapi } from "gapi-cjs";
 
 // Define some constants for the Gmail API
 const SCOPES = "https://www.googleapis.com/auth/gmail.readonly";
@@ -15,14 +14,13 @@ const DISCOVERY_DOCS = [
 ];
 
 // Define a custom hook that handles the authentication and authorization with Google
-export const useGoogleAuth = (clientId, apiKey) => {
-	// Initialize the state variables
+export const useGoogleAuth = (clientId, apiKey, gapi) => {
 	const [isSignedIn, setIsSignedIn] = useState(false);
 	const [isInitialized, setIsInitialized] = useState(false);
 	const [error, setError] = useState(null);
 
 	// Define a helper function that loads the Google API client library and initializes it with the given credentials
-	const initClient = () => {
+	const initClient = async () => {
 		gapi.client
 			.init({
 				apiKey: apiKey,
@@ -57,8 +55,10 @@ export const useGoogleAuth = (clientId, apiKey) => {
 
 	// Load the Google API client library and initialize it when the component mounts
 	useEffect(() => {
-		gapi.load("client:auth2", initClient);
-	}, []);
+		if (gapi) {
+			gapi.load("client:auth2", initClient);
+		}
+	}, [gapi]);
 
 	// Return an object that contains the state and handler functions
 	return {
@@ -71,23 +71,22 @@ export const useGoogleAuth = (clientId, apiKey) => {
 };
 
 // Define a custom hook that handles the Gmail API requests
-export const useGmailApi = () => {
-	// Initialize the state variables
+
+// Define a custom hook that handles the Gmail API requests
+export const useGmailApi = (gapi) => {
 	const [messages, setMessages] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
 
-	// Define a helper function that fetches the messages from the Gmail API
 	const fetchMessages = async () => {
+		if (!gapi) return;
+
 		setLoading(true);
 		try {
-			// Get the list of message IDs from the Gmail API
 			const response = await gapi.client.gmail.users.messages.list({
 				userId: "me",
 			});
 			const messageIds = response.result.messages;
-
-			// Get the details of each message from the Gmail API
 			const messages = await Promise.all(
 				messageIds.map(async (messageId) => {
 					const response = await gapi.client.gmail.users.messages.get({
@@ -98,8 +97,6 @@ export const useGmailApi = () => {
 					return response.result;
 				})
 			);
-
-			// Update the state with the fetched messages
 			setMessages(messages);
 			setLoading(false);
 		} catch (error) {
@@ -108,7 +105,47 @@ export const useGmailApi = () => {
 		}
 	};
 
-	// Return an object that contains the state and handler functions
+	const checkNewMessages = async () => {
+		if (!gapi) return;
+
+		try {
+			const response = await gapi.client.gmail.users.messages.list({
+				userId: "me",
+				maxResults: 1,
+			});
+			const latestMessageId = response.result.messages[0].id;
+
+			if (messages.length === 0 || latestMessageId !== messages[0].id) {
+				const response = await gapi.client.gmail.users.messages.get({
+					userId: "me",
+					id: latestMessageId,
+					format: "full",
+				});
+				const newMessage = response.result;
+				setMessages([newMessage, ...messages]);
+			}
+		} catch (error) {
+			setError(error);
+		}
+	};
+
+	useEffect(() => {
+		let intervalId;
+		if (
+			gapi &&
+			gapi.auth2.getAuthInstance().isSignedIn.get() &&
+			messages.length > 0
+		) {
+			intervalId = setInterval(() => {
+				checkNewMessages();
+			}, 10000);
+		}
+
+		return () => {
+			clearInterval(intervalId);
+		};
+	}, [messages]);
+
 	return {
 		messages,
 		loading,
@@ -119,15 +156,28 @@ export const useGmailApi = () => {
 
 // Define a component that renders a sign-in button if not signed in, or a list of messages if signed in
 const GmailReact = ({ clientId, apiKey }) => {
-	// Use the custom hooks to get the authentication and Gmail API data and functions
+	const [gapi, setGapi] = useState();
+
+	useEffect(() => {
+		import("gapi-cjs").then((gapi) => {
+			setGapi(gapi.default.gapi);
+		});
+		console.log("Gapi Contains", gapi);
+	}, []);
+
 	const {
 		isSignedIn,
 		isInitialized,
 		error: authError,
 		handleSignIn,
 		handleSignOut,
-	} = useGoogleAuth(clientId, apiKey);
-	const { messages, loading, error: apiError, fetchMessages } = useGmailApi();
+	} = useGoogleAuth(clientId, apiKey, gapi);
+	const {
+		messages,
+		loading,
+		error: apiError,
+		fetchMessages,
+	} = useGmailApi(gapi);
 
 	// Render a loading indicator if not initialized yet
 	if (!isInitialized) {
@@ -160,5 +210,4 @@ const GmailReact = ({ clientId, apiKey }) => {
 		</div>
 	);
 };
-
 export default GmailReact;
