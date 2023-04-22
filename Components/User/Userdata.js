@@ -1,8 +1,17 @@
 import React from "react";
 import UserMsg from "./UserMsg";
 import UserForm from "./UserForm";
+import UserTable from "./UserTable";
 
-export default function Userdata({ name, messages, fetchMessages, labels }) {
+export default function Userdata({
+	name,
+	messages,
+	fetchMessages,
+	labels,
+	fetchFormMessages,
+	setMessages,
+	FormMessages,
+}) {
 	return (
 		<>
 			<div>
@@ -14,16 +23,23 @@ export default function Userdata({ name, messages, fetchMessages, labels }) {
 					Fetch New Messages
 				</button>
 			</div>
-			<div class="flex gap-2">
-				<div class="w-1/2">
+			<div className="flex gap-2">
+				<div className="w-1/2">
 					<UserMsg
 						name={name}
 						messages={messages}
 						fetchMessages={fetchMessages}
+						FormMessages={FormMessages}
 					/>
 				</div>
-				<div class="w-1/2">
-					<UserForm labels={labels} />
+				<div className="w-1/2">
+					<UserForm
+						labels={labels}
+						fetchFormMessages={fetchFormMessages}
+						setMessages={setMessages}
+						FormMessages={FormMessages}
+					/>
+					<UserTable messages={FormMessages} />
 				</div>
 			</div>
 		</>

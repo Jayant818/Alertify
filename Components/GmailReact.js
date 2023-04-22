@@ -77,3 +77,9 @@ const GmailReact = ({ clientId, apiKey }) => {
 	);
 };
 export default GmailReact;
+
+// {
+//     "id": "SENT",
+//     "name": "SENT",
+//     "type": "system"
+// }
