@@ -23,6 +23,7 @@ const useGmailApi = (gapi) => {
 	const [labelsArray, setLabelsArray] = useState([]);
 	const [textArray, setTextArray] = useState([]);
 	const [emailsArray, setEmailsArray] = useState([]);
+	const [FilteredMessages, setFilteredMessages] = useState([]);
 
 	const fetchLabels = async () => {
 		if (!gapi) return;
@@ -270,10 +271,192 @@ const useGmailApi = (gapi) => {
 	// 	}
 	// };
 
+	// const fetchFormMessages = async (labels = [], text = [], emails = []) => {
+	// 	if (!gapi) return;
+
+	// 	try {
+	// 		setEmailsArray(emails);
+	// 		setLabelsArray(labels);
+	// 		setTextArray(text);
+	// 		const date = new Date();
+	// 		const formattedDate = `${date.getFullYear()}/${
+	// 			date.getMonth() + 1
+	// 		}/${date.getDate()}`;
+
+	// 		const query = [
+	// 			`after:${formattedDate}`,
+	// 			...(labels.length ? labels.map((label) => `label:${label}`) : []),
+	// 			...(text.length ? text.map((t) => `"${t}"`) : []),
+	// 			...(emails.length
+	// 				? emails.map((email) => `from:${email}`).join(" OR ")
+	// 				: ""),
+	// 		]
+	// 			.filter(Boolean)
+	// 			.join(" OR ");
+
+	// 		const response = await gapi.client.gmail.users.messages.list({
+	// 			userId: "me",
+	// 			q: `is:unread ${query}`,
+	// 			maxResults: 4,
+	// 		});
+
+	// 		const messageIds = response.result.messages;
+
+	// 		const messages = await Promise.all(
+	// 			messageIds.map(async (messageId) => {
+	// 				const response = await gapi.client.gmail.users.messages.get({
+	// 					userId: "me",
+	// 					id: messageId.id,
+	// 					format: "full",
+	// 				});
+
+	// 				const headers = response.result.payload.headers;
+	// 				const fromHeader = headers.find((header) => header.name === "From");
+	// 				const senderName = fromHeader
+	// 					? fromHeader.value.split("<")[0].trim()
+	// 					: "Unknown sender";
+	// 				const messageWithSender = { ...response.result, senderName };
+
+	// 				messageWithSender.markAsReadAndArchived = async () => {
+	// 					try {
+	// 						await gapi.client.gmail.users.messages.modify({
+	// 							userId: "me",
+	// 							id: messageId.id,
+	// 							removeLabelIds: ["UNREAD"],
+	// 							addLabelIds: ["INBOX"],
+	// 						});
+	// 						console.log("Message marked as read and archived.");
+	// 					} catch (error) {
+	// 						console.error(error);
+	// 					}
+	// 				};
+
+	// 				return messageWithSender;
+	// 			})
+	// 		);
+	// 		setFormMessages(messages);
+	// 	} catch (error) {
+	// 		setError(error);
+	// 	}
+	// };
+
+	// const fetchFormMessages = async (labels = [], text = [], emails = []) => {
+	// 	if (!gapi) return;
+	// 	try {
+	// 		setEmailsArray(emails);
+	// 		setLabelsArray(labels);
+	// 		setTextArray(text);
+	// 		const date = new Date();
+	// 		const formattedDate = `${date.getFullYear()}/${
+	// 			date.getMonth() + 1
+	// 		}/${date.getDate()}`;
+	// 		const query = [
+	// 			`after:${formattedDate}`,
+	// 			...(labels.length ? labels.map((label) => `label:${label}`) : []),
+	// 			...(text.length ? text.map((t) => `"${t}"`) : []),
+	// 			...(emails.length
+	// 				? emails.map((email) => `from:${email}`).join(" OR ")
+	// 				: ""),
+	// 		]
+	// 			.filter(Boolean)
+	// 			.join(" OR ");
+
+	// 		const response = await gapi.client.gmail.users.messages.list({
+	// 			userId: "me",
+	// 			q: `is:unread ${query}`,
+	// 		});
+	// 		const messageIds = response.result.messages;
+	// 		const filteredMessages = [];
+
+	// 		if (messageIds) {
+	// 			const messages = await Promise.all(
+	// 				messageIds.map(async (messageId) => {
+	// 					const response = await gapi.client.gmail.users.messages.get({
+	// 						userId: "me",
+	// 						id: messageId.id,
+	// 						format: "full",
+	// 					});
+	// 					const headers = response.result.payload.headers;
+	// 					const fromHeader = headers.find((header) => header.name === "From");
+	// 					const senderName = fromHeader
+	// 						? fromHeader.value.split("<")[0].trim()
+	// 						: "Unknown sender";
+	// 					const messageWithSender = { ...response.result, senderName };
+	// 					messageWithSender.markAsReadAndArchived = async () => {
+	// 						try {
+	// 							await gapi.client.gmail.users.messages.modify({
+	// 								userId: "me",
+	// 								id: messageId.id,
+	// 								removeLabelIds: ["UNREAD"],
+	// 								addLabelIds: ["INBOX"],
+	// 							});
+	// 							console.log("Message marked as read and archived.");
+	// 						} catch (error) {
+	// 							console.error(error);
+	// 						}
+	// 					};
+
+	// 					// Check if message matches any of the filter criteria
+	// 					const matchesLabel = labels.length
+	// 						? labels.some((label) =>
+	// 								headers.some(
+	// 									(header) =>
+	// 										header.name === "Label" && header.value === label
+	// 								)
+	// 						  )
+	// 						: true;
+	// 					const matchesText = text.length
+	// 						? text.some((t) => messageWithSender.snippet.includes(t))
+	// 						: true;
+	// 					const matchesEmail = emails.length
+	// 						? emails.some(
+	// 								(email) => fromHeader && fromHeader.value.includes(email)
+	// 						  )
+	// 						: true;
+
+	// 					if (matchesLabel || matchesText || matchesEmail) {
+	// 						filteredMessages.push({
+	// 							message: messageWithSender,
+	// 							read: false,
+	// 							readMessage: async () => {
+	// 								try {
+	// 									await gapi.client.gmail.users.messages.modify({
+	// 										userId: "me",
+	// 										id: messageId.id,
+	// 										removeLabelIds: ["UNREAD"],
+	// 									});
+	// 									console.log("Message marked as read.");
+	// 									filteredMessages.find(
+	// 										(m) => m.message.id === messageId.id
+	// 									).read = true;
+	// 								} catch (error) {
+	// 									console.error(error);
+	// 								}
+	// 							},
+	// 						});
+	// 					}
+
+	// 					return messageWithSender;
+	// 				})
+	// 			);
+
+	// 			// Set state with all messages fetched, regardless of whether they matched the filters
+	// 			setFormMessages(messages);
+	// 		} else {
+	// 			setFormMessages([]);
+	// 		}
+
+	// 		// Set state with filtered messages
+	// 		setFilteredMessages(filteredMessages);
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 	}
+	// };
+
 	const fetchFormMessages = async (labels = [], text = [], emails = []) => {
 		if (!gapi) return;
-
 		try {
+			console.log("Labels", labels);
 			setEmailsArray(emails);
 			setLabelsArray(labels);
 			setTextArray(text);
@@ -281,9 +464,12 @@ const useGmailApi = (gapi) => {
 			const formattedDate = `${date.getFullYear()}/${
 				date.getMonth() + 1
 			}/${date.getDate()}`;
-
+			const nextDate = `${date.getFullYear()}/${date.getMonth() + 1}/${
+				date.getDate() + 1
+			}`;
 			const query = [
 				`after:${formattedDate}`,
+				`before:${nextDate}`,
 				...(labels.length ? labels.map((label) => `label:${label}`) : []),
 				...(text.length ? text.map((t) => `"${t}"`) : []),
 				...(emails.length
@@ -296,46 +482,124 @@ const useGmailApi = (gapi) => {
 			const response = await gapi.client.gmail.users.messages.list({
 				userId: "me",
 				q: `is:unread ${query}`,
-				maxResults: 4,
 			});
 
+			// const messagesResponse = await gapi.client.gmail.users.messages.list({
+			// 	userId: "me",
+			// 	q: `is:unread after:${formattedDate} before:${nextDate} ${labels
+			// 		.map((label) => `label:${label}`)
+			// 		.join(" OR ")} ${text.map((t) => `"${t}"`).join(" OR ")} ${emails
+			// 		.map((email) => `from:${email}`)
+			// 		.join(" OR ")}`,
+			// });
+			// const messageIds = messagesResponse.result.messages;
 			const messageIds = response.result.messages;
+			const filteredMessages = [];
 
-			const messages = await Promise.all(
-				messageIds.map(async (messageId) => {
-					const response = await gapi.client.gmail.users.messages.get({
-						userId: "me",
-						id: messageId.id,
-						format: "full",
-					});
+			if (messageIds) {
+				const messages = await Promise.all(
+					messageIds.map(async (messageId) => {
+						const response = await gapi.client.gmail.users.messages.get({
+							userId: "me",
+							id: messageId.id,
+							format: "full",
+						});
+						const headers = response.result.payload.headers;
+						const fromHeader = headers.find((header) => header.name === "From");
+						const senderName = fromHeader
+							? fromHeader.value.split("<")[0].trim()
+							: "Unknown sender";
+						const messageWithSender = { ...response.result, senderName };
+						messageWithSender.markAsReadAndArchived = async () => {
+							try {
+								await gapi.client.gmail.users.messages.modify({
+									userId: "me",
+									id: messageId.id,
+									removeLabelIds: ["UNREAD"],
+									addLabelIds: ["INBOX"],
+								});
+								console.log("Message marked as read and archived.");
+							} catch (error) {
+								console.error(error);
+							}
+						};
 
-					const headers = response.result.payload.headers;
-					const fromHeader = headers.find((header) => header.name === "From");
-					const senderName = fromHeader
-						? fromHeader.value.split("<")[0].trim()
-						: "Unknown sender";
-					const messageWithSender = { ...response.result, senderName };
+						// Check if message matches any of the filter criteria
+						const matchesLabel =
+							labels.length > 0
+								? labels.some((label) =>
+										headers.some(
+											(header) =>
+												header.name === "Label" && header.value === label
+										)
+								  )
+								: false;
+						const matchesText =
+							text.length > 0
+								? text.some((t) => messageWithSender.snippet.includes(t))
+								: false;
+						const matchesEmail =
+							emails.length > 0
+								? emails.some(
+										(email) => fromHeader && fromHeader.value.includes(email)
+								  )
+								: false;
 
-					messageWithSender.markAsReadAndArchived = async () => {
-						try {
-							await gapi.client.gmail.users.messages.modify({
-								userId: "me",
-								id: messageId.id,
-								removeLabelIds: ["UNREAD"],
-								addLabelIds: ["INBOX"],
-							});
-							console.log("Message marked as read and archived.");
-						} catch (error) {
-							console.error(error);
+						// Get the current date and time
+						const currentDate = new Date();
+						// Get the start of today in UTC
+						const startOfToday = Date.UTC(
+							currentDate.getFullYear(),
+							currentDate.getMonth(),
+							currentDate.getDate()
+						);
+						// Get the end of today in UTC
+						const endOfToday = Date.UTC(
+							currentDate.getFullYear(),
+							currentDate.getMonth(),
+							currentDate.getDate() + 1
+						);
+						// Get the timestamp of the message in UTC
+						const messageDate = parseInt(messageWithSender.internalDate);
+						// Check if the message is received today or not
+						const matchesDate =
+							messageDate >= startOfToday && messageDate < endOfToday;
+
+						if (matchesLabel || matchesText || matchesEmail) {
+							filteredMessages.push(messageWithSender);
+
+							// filteredMessages.push({
+							// 	message: messageWithSender,
+							// 	read: false, // Flag indicating if message has been read
+							// 	readMessage: async () => {
+							// 		try {
+							// 			// Mark message as read
+							// 			await gapi.client.gmail.users.messages.modify({
+							// 				userId: "me",
+							// 				id: messageId.id,
+							// 				removeLabelIds: ["UNREAD"],
+							// 			});
+							// 			console.log("Message marked as read.");
+							// 			// Set read flag to true
+							// 			filteredMessages.find(
+							// 				(m) => m.message.id === messageId.id
+							// 			).read = true;
+							// 		} catch (error) {
+							// 			console.error(error);
+							// 		}
+							// 	},
+							// });
 						}
-					};
 
-					return messageWithSender;
-				})
-			);
-			setFormMessages(messages);
+						return messageWithSender;
+					})
+				);
+				setFormMessages(messages);
+			}
+			// return filteredMessages;
+			setFilteredMessages(filteredMessages);
 		} catch (error) {
-			setError(error);
+			console.error(error);
 		}
 	};
 
@@ -463,6 +727,7 @@ const useGmailApi = (gapi) => {
 		fetchFormMessages,
 		FormMessages,
 		setMessages,
+		FilteredMessages,
 	};
 };
 

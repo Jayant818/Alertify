@@ -1,6 +1,10 @@
 import React from "react";
 
 export default function UserTable({ messages }) {
+	if (messages.length < 1) {
+		return <></>;
+	}
+
 	return (
 		<>
 			<table className="table-auto w-full">
@@ -28,6 +32,7 @@ export default function UserTable({ messages }) {
 										/>
 									</td>
 								</tr>
+
 							))} */}
 					{messages.map((message, index) => (
 						<tr
@@ -36,11 +41,16 @@ export default function UserTable({ messages }) {
 						>
 							<td className="border px-4 py-2">{index + 1}</td>
 							<td className="border px-4 py-2">{message.senderName}</td>
-							<td className="border px-4 py-2">{message.snippet}</td>
+							<td className="border px-4 py-2">
+								{/* {message.snippet ? message.snippet : message.message.snippet} */}
+								{message.snippet}
+							</td>
 							<td className="border px-4 py-2">
 								<input
 									type="checkbox"
-									onChange={() => message.markAsReadAndArchived(message.id)}
+									onChange={() => {
+										message.markAsReadAndArchived(message.id);
+									}}
 								/>
 							</td>
 						</tr>

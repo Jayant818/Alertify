@@ -27,6 +27,7 @@ export default function User() {
 		fetchFormMessages,
 		FormMessages,
 		setMessages,
+		FilteredMessages,
 	} = useGmailApi(gapi);
 
 	const handleClick = () => {
@@ -36,6 +37,9 @@ export default function User() {
 		console.log(isAuthenticated);
 		console.log("GOO");
 	};
+
+	console.log("FilteredMessages ", FilteredMessages);
+	console.log(" Form Messages", FormMessages);
 
 	// console.log(messages);
 	// console.log("App is rendering too many times");
@@ -50,7 +54,7 @@ export default function User() {
 				fetchMessages={fetchMessages}
 				labels={labels}
 				fetchFormMessages={fetchFormMessages}
-				FormMessages={FormMessages}
+				FormMessages={FilteredMessages}
 				setMessages={setMessages}
 			/>
 		</div>
