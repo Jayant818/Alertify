@@ -5,7 +5,7 @@
 // See https://developers.google.com/gmail/api/quickstart/js for more details
 
 // Import React and Google API client library
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
 // Define some constants for the Gmail API
 const SCOPES = "https://www.googleapis.com/auth/gmail.readonly";
@@ -73,10 +73,97 @@ const useGmailApi = (gapi) => {
 	// 	}
 	// };
 
+	// const fetchMessages = useMemo(async () => {
+	// 	if (!gapi) return;
+	// 	// setLoading(true);
+	// 	try {
+	// 		console.log("Running");
+
+	// 		const response = await gapi.client.gmail.users.messages.list({
+	// 			userId: "me",
+	// 			q: "is:unread",
+	// 			maxResults: 4,
+	// 		});
+	// 		const messageIds = response.result.messages;
+	// 		const messages = await Promise.all(
+	// 			messageIds.map(async (messageId) => {
+	// 				const response = await gapi.client.gmail.users.messages.get({
+	// 					userId: "me",
+	// 					id: messageId.id,
+	// 					format: "full",
+	// 				});
+	// 				const headers = response.result.payload.headers;
+	// 				const fromHeader = headers.find((header) => header.name === "From");
+	// 				const senderName = fromHeader
+	// 					? fromHeader.value.split("<")[0].trim()
+	// 					: "Unknown sender";
+	// 				const messageWithSender = { ...response.result, senderName };
+	// 				messageWithSender.markAsReadAndArchived = async () => {
+	// 					try {
+	// 						await gapi.client.gmail.users.messages.modify({
+	// 							userId: "me",
+	// 							id: messageId.id,
+	// 							removeLabelIds: ["UNREAD"],
+	// 							addLabelIds: ["INBOX"],
+	// 						});
+	// 						console.log("Called");
+	// 					} catch (error) {
+	// 						console.error(error);
+	// 					}
+	// 				};
+	// 				messageWithSender.delete = async () => {
+	// 					try {
+	// 						await gapi.client.gmail.users.messages.trash({
+	// 							userId: "me",
+	// 							id: messageId.id,
+	// 						});
+	// 						console.log("Deleted message with ID", messageId.id);
+	// 					} catch (error) {
+	// 						console.error(error);
+	// 					}
+	// 				};
+	// 				return messageWithSender;
+	// 			})
+	// 		);
+
+	// 		// check if the new message has any label from the labelsArray state
+	// 		const labelIds = messages[0].labelIds;
+	// 		const isLabelMatched = labelIds.some((label) =>
+	// 			labelsArray.includes(label)
+	// 		);
+
+	// 		// check if the sender of the new message is in the emailsArray state
+	// 		// const senderEmail = fromHeader
+	// 		// 	? fromHeader.value.match(/<([^>]+)>/)[1]
+	// 		// 	: null;
+	// 		// const isSenderMatched = senderEmail
+	// 		// 	? emailsArray.includes(senderEmail)
+	// 		// 	: false;
+
+	// 		// check if the body of the new message contains any text from the textArray state
+	// 		const body = messages[0].snippet;
+	// 		const isTextMatched = textArray.some((text) => body.includes(text));
+
+	// 		// set the color property to red if any of the conditions are true
+	// 		console.log("Hello ", ...labelsArray, ...emailsArray, ...textArray);
+	// 		if (isLabelMatched || isTextMatched) {
+	// 			messages[0].color = "red";
+	// 		}
+
+	// 		setMessages(messages);
+	// 		// setLoading(false);
+	// 	} catch (error) {
+	// 		setError(error);
+	// 		// setLoading(false);
+	// 	}
+	// }, [gapi, labelsArray, textArray, messages]);
+
 	const fetchMessages = async () => {
 		if (!gapi) return;
-		setLoading(true);
+		// setLoading(true);
 		try {
+			console.log("Running");
+
 			const response = await gapi.client.gmail.users.messages.list({
 				userId: "me",
 				q: "is:unread",
@@ -109,63 +196,52 @@ const useGmailApi = (gapi) => {
 							console.error(error);
 						}
 					};
+					messageWithSender.delete = async () => {
+						try {
+							await gapi.client.gmail.users.messages.trash({
+								userId: "me",
+								id: messageId.id,
+							});
+							console.log("Deleted message with ID", messageId.id);
+						} catch (error) {
+							console.error(error);
+						}
+					};
 					return messageWithSender;
 				})
 			);
+
+			// check if the new message has any label from the labelsArray state
+			const labelIds = messages[0].labelIds;
+			const isLabelMatched = labelIds.some((label) =>
+				labelsArray.includes(label)
+			);
+
+			// check if the sender of the new message is in the emailsArray state
+			// const senderEmail = fromHeader
+			// 	? fromHeader.value.match(/<([^>]+)>/)[1]
+			// 	: null;
+			// const isSenderMatched = senderEmail
+			// 	? emailsArray.includes(senderEmail)
+			// 	: false;
+
+			// check if the body of the new message contains any text from the textArray state
+			const body = messages[0].snippet;
+			const isTextMatched = textArray.some((text) => body.includes(text));
+
+			// set the color property to red if any of the conditions are true
+			console.log("Hello ", ...labelsArray, ...emailsArray, ...textArray);
+			if (isLabelMatched || isTextMatched) {
+				messages[0].color = "red";
+			}
+
 			setMessages(messages);
-			setLoading(false);
+			// setLoading(false);
 		} catch (error) {
 			setError(error);
-			setLoading(false);
+			// setLoading(false);
 		}
 	};
-
-	// const fetchFormMessages = async (labels = [], text = [], emails = []) => {
-	// 	if (!gapi) return;
-
-	// 	// setLoading(true);
-	// 	try {
-	// 		const query = [
-	// 			...(labels.length ? labels.map((label) => `label:${label}`) : []),
-	// 			...(text.length ? text.map((t) => `"${t}"`) : []),
-	// 			...(emails.length ? emails.map((email) => `from:${email}`) : []),
-	// 		].join(" OR ");
-
-	// 		console.log("query", query);
-
-	// 		const response = await gapi.client.gmail.users.messages.list({
-	// 			userId: "me",
-	// 			q: `is:unread ${query}`,
-	// 			maxResults: 4,
-	// 		});
-	// 		console.log("response", response);
-
-	// 		const messageIds = response.result.messages;
-	// 		const messages = await Promise.all(
-	// 			messageIds.map(async (messageId) => {
-	// 				const response = await gapi.client.gmail.users.messages.get({
-	// 					userId: "me",
-	// 					id: messageId.id,
-	// 					format: "full",
-	// 				});
-	// 				const headers = response.result.payload.headers;
-	// 				const fromHeader = headers.find((header) => header.name === "From");
-	// 				const senderName = fromHeader
-	// 					? fromHeader.value.split("<")[0].trim()
-	// 					: "Unknown sender";
-	// 				const messageWithSender = { ...response.result, senderName };
-	// 				return messageWithSender;
-	// 			})
-	// 		);
-	// 		console.log("message", messages);
-
-	// 		setFormMessages(messages);
-	// 		// setLoading(false);
-	// 	} catch (error) {
-	// 		setError(error);
-	// 		// setLoading(false);
-	// 	}
-	// };
 
 	// const fetchFormMessages = async (labels = [], text = [], emails = []) => {
 	// 	if (!gapi) return;
@@ -519,6 +595,17 @@ const useGmailApi = (gapi) => {
 									addLabelIds: ["INBOX"],
 								});
 								console.log("Message marked as read and archived.");
+							} catch (error) {
+								console.error(error);
+							}
+						};
+						messageWithSender.delete = async () => {
+							try {
+								await gapi.client.gmail.users.messages.trash({
+									userId: "me",
+									id: messageId.id,
+								});
+								console.log("Deleted message with ID", messageId.id);
 							} catch (error) {
 								console.error(error);
 							}

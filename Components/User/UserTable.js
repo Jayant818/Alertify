@@ -14,6 +14,7 @@ export default function UserTable({ messages }) {
 						<th className="px-4 py-2">Sender Name</th>
 						<th className="px-4 py-2">Body</th>
 						<th className="px-4 py-2">Marks as Read</th>
+						<th className="px-4 py-2">Delete</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -50,6 +51,14 @@ export default function UserTable({ messages }) {
 									type="checkbox"
 									onChange={() => {
 										message.markAsReadAndArchived(message.id);
+									}}
+								/>
+							</td>
+							<td className="border px-4 py-2">
+								<input
+									type="checkbox"
+									onChange={() => {
+										message.delete(message.id);
 									}}
 								/>
 							</td>

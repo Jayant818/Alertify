@@ -5,6 +5,7 @@ import Header from "@/Components/Header";
 import { useRouter } from "next/router";
 import useGmailApi from "@/helpers/gmail-api";
 import Userdata from "@/Components/User/Userdata";
+import Footer from "@/Components/Footer";
 
 export default function User() {
 	const {
@@ -57,6 +58,7 @@ export default function User() {
 				FormMessages={FilteredMessages}
 				setMessages={setMessages}
 			/>
+			<Footer />
 		</div>
 	);
 }
