@@ -18,6 +18,7 @@ export default function Home() {
 	if (isAuthenticated) {
 		router.push("/user");
 	}
+	console.log("hjRendering");
 
 	return (
 		<>

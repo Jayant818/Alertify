@@ -29,22 +29,17 @@ export default function User() {
 		FormMessages,
 		setMessages,
 		FilteredMessages,
+		fetchLabels,
 	} = useGmailApi(gapi);
 
 	const handleClick = () => {
 		handleSignOut();
 		setIsAuthenticated(false);
 		router.push("/");
-		console.log(isAuthenticated);
-		console.log("GOO");
 	};
 
-	console.log("FilteredMessages ", FilteredMessages);
-	console.log(" Form Messages", FormMessages);
+	console.log("Rerendered");
 
-	// console.log(messages);
-	// console.log("App is rendering too many times");
-	// console.log("fetched Form Messages", FormMessages);
 	return (
 		<div>
 			<Header name="Sign Out" handleClick={handleClick} />
@@ -57,6 +52,7 @@ export default function User() {
 				fetchFormMessages={fetchFormMessages}
 				FormMessages={FilteredMessages}
 				setMessages={setMessages}
+				fetchLabels={fetchLabels}
 			/>
 			<Footer />
 		</div>

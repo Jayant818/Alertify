@@ -7,6 +7,7 @@ const DISCOVERY_DOCS = [
 ];
 
 const useGoogleAuth = (clientId, apiKey, gapi) => {
+	console.log("Inside Google Auth");
 	const [isSignedIn, setIsSignedIn] = useState(false);
 	const [isInitialized, setIsInitialized] = useState(false);
 	const [error, setError] = useState(null);

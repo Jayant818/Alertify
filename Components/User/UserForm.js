@@ -26,14 +26,11 @@ export default function UserForm({
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		// Here you can write your logic for handling the form submit
-		// console.log("Called");
 		fetchFormMessages(SelectedLabel, searchText, searchMail);
 		setTimeout(() => {
 			// setMessages([])
 		}, 1000);
 	};
-
-	// console.log("Labels ", labels);
 
 	return (
 		<form

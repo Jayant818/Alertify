@@ -5,6 +5,8 @@ export default function UserTable({ messages }) {
 		return <></>;
 	}
 
+	console.log(messages[0].markAsReadAndArchived);
+
 	return (
 		<>
 			<table className="table-auto w-full">
