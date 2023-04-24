@@ -762,6 +762,13 @@ const useGmailApi = (gapi) => {
 					newMessage.color = "red";
 				}
 				console.log("Found");
+				const res = await fetch("/api/send-message", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ senderEmail, body }),
+				});
+				const data = await res.json();
+
 				setMessages((prevMessages) => [newMessage, ...prevMessages]);
 			}
 		} catch (error) {
@@ -776,7 +783,7 @@ const useGmailApi = (gapi) => {
 			// fetchMessages();
 			intervalId = setInterval(() => {
 				checkNewMessages();
-			}, 1000);
+			}, 10000);
 
 			// Get the user name
 			const user = gapi.auth2.getAuthInstance().currentUser.get();

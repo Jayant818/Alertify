@@ -15,10 +15,12 @@
     "gapi-cjs": "^1.0.3",
     "gapi-script": "^1.2.0",
     "googleapis": "^117.0.0",
+    "net": "^1.0.2",
     "next": "13.3.0",
     "next-auth": "^4.22.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "twilio": "^4.10.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.14",
