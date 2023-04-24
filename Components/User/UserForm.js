@@ -5,6 +5,7 @@ export default function UserForm({
 	fetchFormMessages,
 	setMessages,
 	FormMessages,
+	fetchMessages,
 }) {
 	const [SelectedLabel, setSelectedLabel] = useState([]);
 	const [searchText, setSearchText] = useState([]);
@@ -27,9 +28,10 @@ export default function UserForm({
 		event.preventDefault();
 		// Here you can write your logic for handling the form submit
 		fetchFormMessages(SelectedLabel, searchText, searchMail);
+		console.log("Also Calling th fetchMessages");
 		setTimeout(() => {
-			// setMessages([])
-		}, 1000);
+			fetchMessages();
+		}, 20000);
 	};
 
 	return (

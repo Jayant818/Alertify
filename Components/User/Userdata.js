@@ -44,6 +44,7 @@ export default function Userdata({
 						fetchFormMessages={fetchFormMessages}
 						setMessages={setMessages}
 						FormMessages={FormMessages}
+						fetchMessages={fetchMessages}
 					/>
 					<UserTable messages={FormMessages} />
 				</div>

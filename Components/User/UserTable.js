@@ -5,8 +5,6 @@ export default function UserTable({ messages }) {
 		return <></>;
 	}
 
-	console.log(messages[0].markAsReadAndArchived);
-
 	return (
 		<>
 			<table className="table-auto w-full">
@@ -20,23 +18,6 @@ export default function UserTable({ messages }) {
 					</tr>
 				</thead>
 				<tbody>
-					{/* {FormMessages.map((message, index) => (
-								<tr
-									key={message.id}
-									className={message.color == "red" ? "bg-red-500" : " "}
-								>
-									<td className="border px-4 py-2">{index + 1}</td>
-									<td className="border px-4 py-2">{message.senderName}</td>
-									<td className="border px-4 py-2">{message.snippet}</td>
-									<td className="border px-4 py-2">
-										<input
-											type="checkbox"
-											onChange={() => message.markAsReadAndArchived(message.id)}
-										/>
-									</td>
-								</tr>
-
-							))} */}
 					{messages.map((message, index) => (
 						<tr
 							key={message.id}
@@ -44,15 +25,12 @@ export default function UserTable({ messages }) {
 						>
 							<td className="border px-4 py-2">{index + 1}</td>
 							<td className="border px-4 py-2">{message.senderName}</td>
-							<td className="border px-4 py-2">
-								{/* {message.snippet ? message.snippet : message.message.snippet} */}
-								{message.snippet}
-							</td>
+							<td className="border px-4 py-2">{message.snippet}</td>
 							<td className="border px-4 py-2">
 								<input
 									type="checkbox"
 									onChange={() => {
-										message.markAsReadAndArchived(message.id);
+										message.markAsReadAndArchived();
 									}}
 								/>
 							</td>
@@ -60,7 +38,7 @@ export default function UserTable({ messages }) {
 								<input
 									type="checkbox"
 									onChange={() => {
-										message.delete(message.id);
+										message.delete();
 									}}
 								/>
 							</td>
