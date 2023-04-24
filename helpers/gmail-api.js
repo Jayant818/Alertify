@@ -652,6 +652,65 @@ const useGmailApi = (gapi) => {
 	// 	}
 	// }, [gapi, labelsArray, emailsArray, textArray, messages]);
 
+	const searchMessages = async (query) => {
+		if (!gapi) return [];
+		// setLoading(true);
+		try {
+			const response = await gapi.client.gmail.users.messages.list({
+				userId: "me",
+				q: query,
+				maxResults: 10,
+			});
+			const messageIds = response.result.messages;
+			const messages = await Promise.all(
+				messageIds.map(async (messageId) => {
+					const response = await gapi.client.gmail.users.messages.get({
+						userId: "me",
+						id: messageId.id,
+						format: "full",
+					});
+					const headers = response.result.payload.headers;
+					const fromHeader = headers.find((header) => header.name === "From");
+					const senderName = fromHeader
+						? fromHeader.value.split("<")[0].trim()
+						: "Unknown sender";
+					const messageWithSender = { ...response.result, senderName };
+					messageWithSender.markAsReadAndArchived = async () => {
+						try {
+							await gapi.client.gmail.users.messages.modify({
+								userId: "me",
+								id: messageId.id,
+								removeLabelIds: ["UNREAD"],
+								addLabelIds: ["INBOX"],
+							});
+							console.log("Called");
+						} catch (error) {
+							console.error(error);
+						}
+					};
+					messageWithSender.delete = async () => {
+						try {
+							await gapi.client.gmail.users.messages.trash({
+								userId: "me",
+								id: messageId.id,
+							});
+							console.log("Deleted message with ID", messageId.id);
+						} catch (error) {
+							console.error(error);
+						}
+					};
+					return messageWithSender;
+				})
+			);
+			// setLoading(false);
+			return messages;
+		} catch (error) {
+			setError(error);
+			// setLoading(false);
+			return [];
+		}
+	};
+
 	const checkNewMessages = async () => {
 		// console.log("Hi");
 		if (!gapi) return;
@@ -741,6 +800,7 @@ const useGmailApi = (gapi) => {
 		setMessages,
 		FilteredMessages,
 		fetchLabels,
+		searchMessages,
 	};
 };
 

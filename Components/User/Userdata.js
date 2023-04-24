@@ -2,6 +2,7 @@ import React from "react";
 import UserMsg from "./UserMsg";
 import UserForm from "./UserForm";
 import UserTable from "./UserTable";
+import SearchMessages from "./UserSearch";
 
 export default function Userdata({
 	name,
@@ -12,6 +13,7 @@ export default function Userdata({
 	setMessages,
 	FormMessages,
 	fetchLabels,
+	searchMessages,
 }) {
 	const handleClick = () => {
 		fetchMessages();
@@ -19,6 +21,7 @@ export default function Userdata({
 	};
 	return (
 		<>
+			<SearchMessages searchMessages={searchMessages} />
 			<div>
 				<p className="text-center text-2xl mb-4">Hello 👋 {name}</p>
 				<button

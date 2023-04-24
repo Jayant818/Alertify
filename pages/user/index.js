@@ -30,6 +30,7 @@ export default function User() {
 		setMessages,
 		FilteredMessages,
 		fetchLabels,
+		searchMessages,
 	} = useGmailApi(gapi);
 
 	const handleClick = () => {
@@ -53,6 +54,7 @@ export default function User() {
 				FormMessages={FilteredMessages}
 				setMessages={setMessages}
 				fetchLabels={fetchLabels}
+				searchMessages={searchMessages}
 			/>
 			<Footer />
 		</div>
