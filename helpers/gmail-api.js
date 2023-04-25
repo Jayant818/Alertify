@@ -40,6 +40,7 @@ const useGmailApi = (gapi) => {
 
 	const fetchMessages = async () => {
 		if (!gapi) return;
+		setLoading(true);
 		try {
 			console.log("Fetching the new Messages");
 			const response = await gapi.client.gmail.users.messages.list({
@@ -106,8 +107,10 @@ const useGmailApi = (gapi) => {
 			});
 
 			setMessages(messages);
+			setLoading(false);
 		} catch (error) {
 			setError(error);
+			setLoading(false);
 		}
 	};
 
@@ -783,9 +786,7 @@ const useGmailApi = (gapi) => {
 			// fetchMessages();
 			intervalId = setInterval(() => {
 				checkNewMessages();
-			}, 10000);
-
-			// Get the user name
+			}, 9000);
 			const user = gapi.auth2.getAuthInstance().currentUser.get();
 			setName(user.getBasicProfile().getName());
 		}
@@ -794,6 +795,18 @@ const useGmailApi = (gapi) => {
 			clearInterval(intervalId);
 		};
 	}, [messages]);
+
+	useEffect(() => {
+		if (gapi && gapi.auth2.getAuthInstance().isSignedIn.get()) {
+			fetchLabels();
+			fetchMessages();
+		}
+	}, []);
+
+	useEffect(() => {
+		// do something when the FormMessages state changes
+		console.log("FormMessages updated:", FormMessages);
+	}, [FormMessages]);
 
 	return {
 		messages,

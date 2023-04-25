@@ -29,12 +29,12 @@ function SearchMessages({ searchMessages }) {
 	return (
 		<div className="bg-white  p-8 mb-4">
 			<form onSubmit={handleSearch} className="space-y-4">
-				<div className="flex flex-col space-y-1">
+				<div className="flex flex-col space-y-">
 					<label className="text-blue-800 font-bold" htmlFor="query">
 						{" "}
 						Search Query{" "}
 					</label>
-					<div className="relative">
+					<div className="">
 						<input
 							className="border border-blue-300 rounded-lg w-full py-2 px-3 text-blue-700 leading-tight focus:ring-blue-500 focus:border-blue-500 placeholder-blue-400"
 							id="query"
@@ -43,7 +43,7 @@ function SearchMessages({ searchMessages }) {
 							onChange={handleInputChange}
 							placeholder="Search for messages…"
 						/>
-						<div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+						<div className=" inset-y-0 right-0 pr-3 flex items-center">
 							<button
 								className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:ring-blue-300 focus:ring-offset-white focus:ring-offset-2 focus:ring-2"
 								type="submit"
