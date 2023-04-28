@@ -5,7 +5,14 @@
 // See https://developers.google.com/gmail/api/quickstart/js for more details
 
 // Import React and Google API client library
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, {
+	useState,
+	useEffect,
+	useCallback,
+	useMemo,
+	useContext,
+} from "react";
+// import { AuthContext } from "@/Components/authContext";
 
 // Define some constants for the Gmail API
 const SCOPES = "https://www.googleapis.com/auth/gmail.readonly";
@@ -24,6 +31,15 @@ const useGmailApi = (gapi) => {
 	const [textArray, setTextArray] = useState([]);
 	const [emailsArray, setEmailsArray] = useState([]);
 	const [FilteredMessages, setFilteredMessages] = useState([]);
+	// console.log(gapi);
+
+	// const {
+	// 	isAuthenticated,
+	// 	handleSignIn,
+	// 	handleSignOut,
+	// 	setIsAuthenticated,
+	// 	gapi,
+	// } = useContext(AuthContext);
 
 	const fetchLabels = async () => {
 		if (!gapi) return;
@@ -797,10 +813,17 @@ const useGmailApi = (gapi) => {
 	}, [messages]);
 
 	useEffect(() => {
-		if (gapi && gapi.auth2.getAuthInstance().isSignedIn.get()) {
+		const fetchData = () => {
+			console.log("Calling");
 			fetchLabels();
 			fetchMessages();
-		}
+			if (gapi && gapi.auth2.getAuthInstance().isSignedIn.get()) {
+			} else {
+				setTimeout(fetchData, 20000); // retry after 1 second
+			}
+		};
+
+		fetchData();
 	}, []);
 
 	useEffect(() => {

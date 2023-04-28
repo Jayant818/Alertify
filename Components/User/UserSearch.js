@@ -1,8 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+let WhatsappQuery = "";
+
+export function Search({ messageToSend }) {
+	// This useEffect will be called when messageToSend prop changes
+	WhatsappQuery = messageToSend;
+
+	console.log("Reached here");
+}
 
 function SearchMessages({ searchMessages }) {
 	const [query, setQuery] = useState("");
 	const [searchResult, setSearchResult] = useState([]);
+	const [formattedMessage, setFormattedMessage] = useState("");
+	const [whatsappQuery, setWhatsappQuery] = useState("");
+
+	useEffect(() => {
+		console.log("Inside useEffect");
+		async function fetchSearchResult() {
+			const result = await searchMessages(WhatsappQuery);
+			console.log("The Result of Searched From whatsapp is", result);
+		}
+		fetchSearchResult();
+	}, [WhatsappQuery]);
+
+	// useEffect(() => {
+	// 	socket.on("formattedMessage", (message) => {
+	// 		setFormattedMessage(message);
+	// 	});
+	// }, []);
+
+	console.log("Formatted Msg", formattedMessage);
 
 	const handleInputChange = (event) => {
 		setQuery(event.target.value);
