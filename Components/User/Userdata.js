@@ -14,18 +14,20 @@ export default function Userdata({
 	FormMessages,
 	fetchLabels,
 	searchMessages,
+	SendListOfMessages,
 }) {
 	const handleClick = () => {
 		fetchMessages();
 		fetchLabels();
+		// SendListOfMessages();
 	};
 	return (
-		<>
+		<div className="mb-16 mt-10">
 			<SearchMessages searchMessages={searchMessages} />
 			<div>
 				<p className="text-center text-2xl mb-4">Hello 👋 {name}</p>
 				<button
-					className="block mx-auto mb-4 px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800 transition duration-300 ease-in-out"
+					className="block mx-auto mb-4  btn2"
 					onClick={handleClick}
 					// onClick={() => fetchMessages()}
 				>
@@ -52,6 +54,6 @@ export default function Userdata({
 					<UserTable messages={FormMessages} />
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }

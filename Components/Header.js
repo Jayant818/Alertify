@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 
 export default function Header({ name, handleClick }) {
 	return (
-		<div className="flex justify-between ml-4 mt-2 mr-4 items-center">
-			<p className="text-2xl uppercase text-red-800 text cursor-pointer font-medium leading-10 tracking-wider">
+		<div className="flex justify-between bg-gray-900  items-center p-4">
+			<p className="text-3xl uppercase text-white text cursor-pointer font-bold leading-10 tracking-wider">
 				Alertify
 			</p>
 			<button
 				onClick={() => handleClick()}
-				className="px-4 py-2 text-white bg-blue-500 cursor-pointer rounded-lg hover:shadow-lg hover:bg-blue-800"
+				className="px-4 py-2 text-white text-xl font-medium bg-transparent border-2 border-[#303fe1] cursor-pointer rounded-lg hover:shadow-lg hover:bg-[#303fe1]"
 			>
 				{name}
 			</button>

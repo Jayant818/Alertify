@@ -15,6 +15,8 @@
     "gapi-cjs": "^1.0.3",
     "gapi-script": "^1.2.0",
     "googleapis": "^117.0.0",
+    "mongodb": "^5.3.0",
+    "mongoose": "^7.1.0",
     "net": "^1.0.2",
     "next": "13.3.0",
     "next-auth": "^4.22.0",

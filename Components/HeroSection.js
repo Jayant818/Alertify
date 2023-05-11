@@ -4,21 +4,21 @@ import hero from "../public/Images/hero.jpeg";
 
 const HeroSection = ({ handleClick }) => {
 	return (
-		<div className="flex items-center justify-center h-screen bg-gray-100">
+		<div className="flex items-center justify-center h-screen bg-[#0d0f19]">
 			{/* main container with flexbox and height set to full screen */}
-			<div className="container flex flex-col md:flex-row items-center justify-center px-5 text-gray-700">
+			<div className="container flex flex-col md:flex-row  items-center justify-center px-5 text-gray-700 gap-10">
 				{/* inner container with responsive layout */}
 				<div className="max-w-md">
 					{/* text content container */}
-					<div className="text-5xl font-bold text-gray-800">Alertify</div>
+					<div className="text-5xl font-bold text-white">Alertify</div>
 					{/* heading with large font size and bold weight */}
-					<p className="text-2xl mb-8 leading-relaxed text-gray-600">
+					<p className="text-2xl mb-8 leading-relaxed text-white">
 						Send email alerts on WhatsApp with ease
 					</p>
 					{/* description with medium font size and margin bottom */}
 					<button
 						onClick={handleClick}
-						className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105"
+						className="px-4 py-2 text-white text-xl font-medium bg-[#303fe1] border-2 border-[#303fe1] cursor-pointer rounded-lg hover:shadow-lg hover:bg-[#fff] hover:border-[#fff] hover:text-[#303fe1] "
 					>
 						Get started
 					</button>

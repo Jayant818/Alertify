@@ -34,6 +34,8 @@ export default function User() {
 		FilteredMessages,
 		fetchLabels,
 		searchMessages,
+		allMessages,
+		getAllMessages,
 	} = useGmailApi(gapi);
 
 	const handleClick = () => {
@@ -44,8 +46,9 @@ export default function User() {
 
 	console.log("Rerendered");
 
-	const onClose = () => {
+	const onClose = async () => {
 		SetIsOpen(false);
+		// await getAllMessages();
 		SendHello();
 		setTimeout(() => {
 			SendListOfMessages();
@@ -70,13 +73,26 @@ export default function User() {
 		const res = await fetch("/api/send-list-messages", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ messages }),
+			body: JSON.stringify({ messages, allMessages }),
 		});
 		const data = await res.json();
+		console.log("The all messages", allMessages);
 	};
 
+	const [content, setContent] = useState("");
+
+	// useEffect(() => {
+	// 	console.log("Inside useEffect");
+	// 	const interval = setInterval(() => {
+	// 		fetch("./message.txt")
+	// 			.then((res) => res.text())
+	// 			.then((data) => console.log("data is ", data));
+	// 	}, 10000);
+	// 	return () => clearInterval(interval);
+	// }, []);
+
 	return (
-		<div>
+		<div className="bg-[#0d0f19] text-white">
 			<MobileNumberPopup
 				isOpen={isOpen}
 				onClose={onClose}
@@ -95,6 +111,7 @@ export default function User() {
 				setMessages={setMessages}
 				fetchLabels={fetchLabels}
 				searchMessages={searchMessages}
+				SendListOfMessages={SendListOfMessages}
 			/>
 			<Footer />
 		</div>

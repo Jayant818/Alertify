@@ -2,7 +2,7 @@ import React from "react";
 
 const Footer = () => {
 	return (
-		<footer className="flex flex-col items-center justify-center bg-gray-900 text-white p-5">
+		<footer className="flex flex-col items-center justify-center bg-[#151720] font text-white p-5">
 			{/* <img
 				className="w-24 h-auto mb-2"
 				src="/Images/logo.png"

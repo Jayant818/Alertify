@@ -7,4 +7,7 @@
   .btn {
     @apply bg-blue-500 text-white font-bold py-2 px-4 rounded shadow-xl hover:cursor-pointer hover:bg-blue-800 hover:shadow-2xl mt-4 ml-4;
   }
+  .btn2{
+    @apply px-4 py-2 text-white text-xl font-medium bg-[#303fe1] border-2 border-[#303fe1] cursor-pointer rounded-lg hover:shadow-lg hover:bg-[#fff] hover:border-[#fff] hover:text-[#303fe1]
+  }
 }

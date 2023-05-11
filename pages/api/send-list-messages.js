@@ -1,27 +1,56 @@
 import twilio from "twilio";
+import { MongoClient } from "mongodb";
+
+export const config = {
+	api: {
+		bodyParser: {
+			sizeLimit: "4mb",
+		},
+	},
+};
 
 export default async function handler(req, res) {
-	const { messages } = req.body;
+	const { messages, allMessages } = req.body;
+	console.log("messages", messages);
 
-	const accountSid = "ACb7333e96b8280e72dc9290b7948ef033";
-	const authToken = "1051a9bc8ff1a4baed0cc319a5da1319";
-	const client = twilio(accountSid, authToken);
+	let client;
+	try {
+		client = await MongoClient.connect(
+			"mongodb+srv://yadavjayant2003:ZMGyRxcXFOD1NI0r@cluster0.kzm1urt.mongodb.net/test?retryWrites=true&w=majority"
+		);
+	} catch (err) {
+		console.log(err);
+		res.status(500).json({ message: "Error connecting to the database" });
+		return;
+	}
+
+	// console.log("Connected to database");
 
 	try {
+		const db = client.db();
+		const collection = db.collection("SearchQuery");
+		const insertResult = await collection.insertOne({ messages: allMessages });
+		console.log("Inserted documents =>", insertResult);
+		// res.status(501).json({ data: "Not legimate" });
+		client.close();
+	} catch (err) {}
+
+	try {
+		const accountSid = "ACb7333e96b8280e72dc9290b7948ef033";
+		const authToken = "75a88cdda1af737bde9ac600e9a411ae";
+		const client2 = twilio(accountSid, authToken);
+
 		let messageBody = "You have unread messages:\n\n";
 		messages.forEach((message, index) => {
-			messageBody += `${index + 1}. From: ${message.senderName}, Subject: ${
-				message.subject
-			}, Message: ${message.snippet}\n\n`;
+			messageBody += `📰 From: ${message.senderName}\n🔑 Subject: ${message.subject}\n📖 Message: ${message.snippet}\n\n`;
 		});
 
-		const message = await client.messages.create({
+		const message = await client2.messages.create({
 			body: messageBody,
 			from: "whatsapp:+14155238886",
 			to: "whatsapp:+919711177191",
 		});
 
-		console.log(message.sid);
 		res.status(200).json({ message: "Message sent successfully" });
 	} catch (error) {
 		console.error(error);

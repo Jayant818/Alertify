@@ -37,10 +37,10 @@ export default function UserForm({
 	return (
 		<form
 			onSubmit={handleSubmit}
-			className="p-4 bg-gray-100 rounded-lg shadow-md"
+			className="p-4 bg-[#0d0f19] rounded-lg shadow-md text-white"
 		>
 			<div className="mb-4">
-				<label htmlFor="label" className="block font-bold mb-2 text-gray-700">
+				<label htmlFor="label" className="block font-bold mb-2 text-white">
 					Choose a label:
 				</label>
 				<select
@@ -48,7 +48,7 @@ export default function UserForm({
 					name="label"
 					value={SelectedLabel}
 					onChange={handleLabelChange}
-					className="block w-full h-full px-4 py-1 mt-2 bg-white border border-gray-400 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+					className="block w-full h-full px-4 py-1 mt-2 bg-[#0d0f19] border border-gray-400 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
 					multiple={true}
 				>
 					<option value="">Select a label</option>
@@ -61,10 +61,7 @@ export default function UserForm({
 			</div>
 
 			<div className="mb-4">
-				<label
-					htmlFor="searchText"
-					className="block font-bold mb-2 text-gray-700"
-				>
+				<label htmlFor="searchText" className="block font-bold mb-2 text-white">
 					Enter search text:
 				</label>
 				<textarea
@@ -72,16 +69,13 @@ export default function UserForm({
 					name="searchText"
 					value={searchText}
 					onChange={handleSearchTextChange}
-					className="w-full px-4 py-2 text-gray-700 bg-white border border-gray-400 rounded shadow-md focus:outline-none focus:shadow-outline-blue focus:border-blue-500 resize-none"
+					className="w-full px-4 py-2 text-white bg-[#0d0f19] border border-gray-400 rounded shadow-md focus:outline-none focus:shadow-outline-blue focus:border-blue-500 resize-none"
 					rows="4"
 				></textarea>
 			</div>
 
 			<div className="mb-4">
-				<label
-					htmlFor="searchMail"
-					className="block font-bold mb-2 text-gray-700"
-				>
+				<label htmlFor="searchMail" className="block font-bold mb-2 text-white">
 					Enter Mail:
 				</label>
 				<textarea
@@ -89,15 +83,12 @@ export default function UserForm({
 					name="searchMail"
 					value={searchMail}
 					onChange={handleSearchMailChange}
-					className="w-full px-4 py-2 text-gray-700 bg-white border border-gray-400 rounded shadow-md focus:outline-none focus:shadow-outline-blue focus:border-blue-500 resize-none"
+					className="w-full px-4 py-2 text-white bg-[#0d0f19] border border-gray-400 rounded shadow-md focus:outline-none focus:shadow-outline-blue focus:border-blue-500 resize-none"
 					rows="4"
 				></textarea>
 			</div>
 
-			<button
-				type="submit"
-				className="block px-4 py-2 mx-auto rounded-md bg-blue-500 text-white hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-			>
+			<button type="submit" className="block btn2">
 				Search
 			</button>
 		</form>

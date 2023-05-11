@@ -5,7 +5,6 @@ let WhatsappQuery = "";
 export function Search({ messageToSend }) {
 	// This useEffect will be called when messageToSend prop changes
 	WhatsappQuery = messageToSend;
-
 	console.log("Reached here");
 }
 
@@ -15,14 +14,14 @@ function SearchMessages({ searchMessages }) {
 	const [formattedMessage, setFormattedMessage] = useState("");
 	const [whatsappQuery, setWhatsappQuery] = useState("");
 
-	useEffect(() => {
-		console.log("Inside useEffect");
-		async function fetchSearchResult() {
-			const result = await searchMessages(WhatsappQuery);
-			console.log("The Result of Searched From whatsapp is", result);
-		}
-		fetchSearchResult();
-	}, [WhatsappQuery]);
+	// useEffect(() => {
+	// 	console.log("Inside useEffect");
+	// 	async function fetchSearchResult() {
+	// 		const result = await searchMessages(WhatsappQuery);
+	// 		console.log("The Result of Searched From whatsapp is", result);
+	// 	}
+	// 	fetchSearchResult();
+	// }, [WhatsappQuery]);
 
 	// useEffect(() => {
 	// 	socket.on("formattedMessage", (message) => {
@@ -30,7 +29,7 @@ function SearchMessages({ searchMessages }) {
 	// 	});
 	// }, []);
 
-	console.log("Formatted Msg", formattedMessage);
+	// console.log("Formatted Msg", formattedMessage);
 
 	const handleInputChange = (event) => {
 		setQuery(event.target.value);
@@ -55,16 +54,16 @@ function SearchMessages({ searchMessages }) {
 	};
 
 	return (
-		<div className="bg-white  p-8 mb-4">
+		<div className="bg-[#0d0f19]  p-8 mb-4">
 			<form onSubmit={handleSearch} className="space-y-4">
-				<div className="flex flex-col space-y-">
-					<label className="text-blue-800 font-bold" htmlFor="query">
+				<div className="flex flex-col space-y-4">
+					<label className="text-white font-bold" htmlFor="query">
 						{" "}
 						Search Query{" "}
 					</label>
 					<div className="">
 						<input
-							className="border border-blue-300 rounded-lg w-full py-2 px-3 text-blue-700 leading-tight focus:ring-blue-500 focus:border-blue-500 placeholder-blue-400"
+							className="border border-blue-300 rounded-lg w-full py-2 px-3 text-white leading-tight focus:ring-blue-500 focus:border-blue-500 placeholder-blue-400"
 							id="query"
 							type="text"
 							value={query}
@@ -72,10 +71,7 @@ function SearchMessages({ searchMessages }) {
 							placeholder="Search for messages…"
 						/>
 						<div className=" inset-y-0 right-0 pr-3 flex items-center">
-							<button
-								className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:ring-blue-300 focus:ring-offset-white focus:ring-offset-2 focus:ring-2"
-								type="submit"
-							>
+							<button className="btn2 mt-5" type="submit">
 								{" "}
 								Search{" "}
 							</button>
@@ -86,13 +82,13 @@ function SearchMessages({ searchMessages }) {
 
 			<ul className="mt-6 space-y-4">
 				{searchResult.map((message) => (
-					<li key={message.id} className="bg-red-100 p-6 rounded-lg">
+					<li key={message.id} className="bg-[#303fe1] p-6 rounded-lg">
 						<div className="flex flex-col sm:flex-row justify-between sm:items-center space-y-4 sm:space-y-0">
 							<div className="flex flex-col space-y-1">
-								<strong className="text-lg text-blue-800">
+								<strong className="text-lg text-white">
 									{message.senderName}
 								</strong>
-								<p className="text-blue-600">{message.snippet}</p>
+								<p className="text-white">{message.snippet}</p>
 							</div>
 							<div className="flex space-x-4">
 								<button
@@ -106,10 +102,7 @@ function SearchMessages({ searchMessages }) {
 								>
 									{message.isMarkedAsRead ? "Marked as Read" : "Mark as Read"}
 								</button>
-								<button
-									className="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline-blue"
-									onClick={() => handleDelete(message)}
-								>
+								<button className="btn2" onClick={() => handleDelete(message)}>
 									Delete
 								</button>
 							</div>
