@@ -413,6 +413,7 @@ const useGmailApi = (gapi) => {
 						textArray.length == 0)
 				) {
 					newMessage.color = "red";
+					setMessages((prevMessages) => [newMessage, ...prevMessages]);
 					console.log("Found");
 					const res = await fetch("/api/send-message", {
 						method: "POST",
@@ -420,8 +421,6 @@ const useGmailApi = (gapi) => {
 						body: JSON.stringify({ senderEmail, body }),
 					});
 					const data = await res.json();
-
-					setMessages((prevMessages) => [newMessage, ...prevMessages]);
 				}
 			}
 		} catch (error) {
@@ -437,7 +436,7 @@ const useGmailApi = (gapi) => {
 			const response = await gapi.client.gmail.users.messages.list({
 				userId: "me",
 				q: "is:unread",
-				maxResults: 50, // set maxResults to 10 for top 10 messages
+				maxResults: 45, // set maxResults to 10 for top 10 messages
 			});
 			const messageIds = response.result.messages;
 			const messages = await Promise.all(
@@ -457,7 +456,7 @@ const useGmailApi = (gapi) => {
 				})
 			);
 
-			setAllMessages(messages);
+			await setAllMessages(messages);
 
 			//   setMessages(messages.slice(0, 10)); // set messages to top 10 messages
 			//   setLoading(false);
@@ -472,9 +471,9 @@ const useGmailApi = (gapi) => {
 		if (gapi && gapi.auth2.getAuthInstance().isSignedIn.get()) {
 			// fetchLabels();
 			// fetchMessages();
-			intervalId = setInterval(() => {
-				checkNewMessages();
-			}, 90000);
+			intervalId = setInterval(async () => {
+				await checkNewMessages();
+			}, 20000);
 			const user = gapi.auth2.getAuthInstance().currentUser.get();
 			setName(user.getBasicProfile().getName());
 		}

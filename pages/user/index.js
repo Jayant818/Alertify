@@ -11,6 +11,7 @@ import MobileNumberPopup from "@/Components/User/MobileNumberPopup";
 export default function User() {
 	const [isOpen, SetIsOpen] = useState(true);
 	const [Name, setName] = useState("");
+	const [number, setNumber] = useState("");
 	const {
 		isAuthenticated,
 		handleSignIn,
@@ -49,17 +50,17 @@ export default function User() {
 	const onClose = async () => {
 		SetIsOpen(false);
 		// await getAllMessages();
-		SendHello();
-		setTimeout(() => {
-			SendListOfMessages();
-		}, 5000);
+		// SendHello();
+		// setTimeout(() => {
+		// 	SendListOfMessages();
+		// }, 5000);
 	};
 
-	const SendHello = async () => {
+	const SendHello = async (mobileNumber) => {
 		const res = await fetch("/api/hello", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ name }),
+			body: JSON.stringify({ name, mobileNumber }),
 		});
 		const data = await res.json();
 	};
@@ -67,13 +68,18 @@ export default function User() {
 	const onSubmit = async (mobileNumber) => {
 		// await fetchMessages();
 		// console.log("Name is ", name);
+		setNumber(mobileNumber);
+		SendHello(mobileNumber);
+		// setTimeout(() => {
+		SendListOfMessages(mobileNumber);
+		// }, 5000);
 	};
 
-	const SendListOfMessages = async () => {
+	const SendListOfMessages = async (mobileNumber) => {
 		const res = await fetch("/api/send-list-messages", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ messages, allMessages }),
+			body: JSON.stringify({ messages, allMessages, mobileNumber }),
 		});
 		const data = await res.json();
 		console.log("The all messages", allMessages);

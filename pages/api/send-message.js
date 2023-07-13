@@ -3,15 +3,15 @@ import twilio from "twilio";
 export default async function handler(req, res) {
 	const { senderEmail, body } = req.body;
 
-	const accountSid = "ACb7333e96b8280e72dc9290b7948ef033";
-	const authToken = "75a88cdda1af737bde9ac600e9a411ae";
+	const accountSid = process.env.ID;
+	const authToken = process.env.TOKEN;
 	const client = twilio(accountSid, authToken);
 
 	try {
 		const message = await client.messages.create({
 			body: `📧 Received a Email from ${senderEmail}\n💬The Mails Says : ${body}`,
 			from: "whatsapp:+14155238886",
-			to: "whatsapp:+919711177191",
+			to: `whatsapp:+91${process.env.MOBILE_NUMBER}`,
 		});
 
 		console.log(message.sid);

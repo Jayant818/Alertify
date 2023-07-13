@@ -4,13 +4,13 @@ import { MongoClient } from "mongodb";
 export const config = {
 	api: {
 		bodyParser: {
-			sizeLimit: "4mb",
+			sizeLimit: "10mb",
 		},
 	},
 };
 
 export default async function handler(req, res) {
-	const { messages, allMessages } = req.body;
+	const { messages, allMessages, mobileNumber } = req.body;
 	console.log("messages", messages);
 
 	let client;
@@ -36,8 +36,8 @@ export default async function handler(req, res) {
 	} catch (err) {}
 
 	try {
-		const accountSid = "ACb7333e96b8280e72dc9290b7948ef033";
-		const authToken = "75a88cdda1af737bde9ac600e9a411ae";
+		const accountSid = process.env.ID;
+		const authToken = process.env.TOKEN;
 		const client2 = twilio(accountSid, authToken);
 
 		let messageBody = "You have unread messages:\n\n";
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
 		const message = await client2.messages.create({
 			body: messageBody,
 			from: "whatsapp:+14155238886",
-			to: "whatsapp:+919711177191",
+			to: `whatsapp:+91${mobileNumber}`,
 		});
 
 		res.status(200).json({ message: "Message sent successfully" });

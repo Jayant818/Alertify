@@ -3,7 +3,7 @@ import twilio from "twilio";
 
 function removeSearchString(str) {
 	if (str.includes("/search")) {
-		return str.replace("/search", "");
+		return str.replace("/search ", "");
 	} else {
 		return str;
 	}
@@ -12,7 +12,7 @@ function removeSearchString(str) {
 export const config = {
 	api: {
 		bodyParser: {
-			sizeLimit: "4mb",
+			sizeLimit: "8mb",
 		},
 	},
 };
@@ -22,8 +22,9 @@ export default async function handler(req, res) {
 		const { Body } = req.body;
 		console.log("Called");
 
-		const accountSid = "ACb7333e96b8280e72dc9290b7948ef033";
-		const authToken = "75a88cdda1af737bde9ac600e9a411ae";
+		const accountSid = process.env.ID;
+		const authToken = process.env.TOKEN;
+
 		const client2 = twilio(accountSid, authToken);
 
 		let messageToSearch = "";
@@ -33,8 +34,10 @@ export default async function handler(req, res) {
 			const toSearch = removeSearchString(Body);
 
 			messageToSearch = toSearch;
+			console.log("Message", messageToSearch);
 		} else {
 			messageToSearch = `Invalid Response`;
+			return;
 		}
 
 		let client1;
@@ -45,7 +48,6 @@ export default async function handler(req, res) {
 		} catch (err) {
 			console.log("Error");
 			res.status(500).json({ message: "Can't Connect to the DB" });
-			return;
 		}
 		console.log("Connected to database");
 
@@ -53,7 +55,7 @@ export default async function handler(req, res) {
 			const message = await client2.messages.create({
 				body: `🔍 Searching...`,
 				from: "whatsapp:+14155238886",
-				to: "whatsapp:+919711177191",
+				to: `whatsapp:+91${process.env.MOBILE_NUMBER}`,
 			});
 
 			// console.log(message.sid);
@@ -70,7 +72,6 @@ export default async function handler(req, res) {
 			const queryResult = await collection.find().toArray();
 			// console.log("queryResult is ", queryResult[0].messages);
 
-			// Write the code To filter out all the message on the basis of the messageToSearch
 			filteredResult = queryResult[0].messages.filter((msg) => {
 				const snippet = msg.snippet.toLowerCase();
 				const senderName = msg.senderName.toLowerCase();
@@ -98,7 +99,7 @@ export default async function handler(req, res) {
 				const message = await client2.messages.create({
 					body: messageBody,
 					from: "whatsapp:+14155238886",
-					to: "whatsapp:+919711177191",
+					to: `whatsapp:+91${process.env.MOBILE_NUMBER}`,
 				});
 
 				// console.log(message.sid);
